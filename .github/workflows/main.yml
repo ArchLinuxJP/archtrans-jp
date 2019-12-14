@@ -1,0 +1,37 @@
+name: archlinux.org news translate
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - run: |
+        curl -sL https://github.com/syui/xq/releases/download/0.1/linux_amd64_xq -o xq;chmod +x xq
+        url=${{ secrets.WEBHOOK_URL }}
+        url_arch="https://www.archlinux.org/feeds/news/"
+        xml=index.xml
+        echo $xml
+        curl -sL $url_arch -o $xml
+        echo ok
+        date_now=`date +"%Y%m%d"`
+        date_xml=`date --date="$(./xq l $xml)" +"%Y%m%d"`;
+        echo check $date_xml $date_now
+        # date_xml=$date_now #test
+        if [ "$date_now" != "$date_xml" ];then
+            echo no news;
+            exit;
+        fi
+        link=`./xq $xml|jq -r ".[0].link"`
+        title=`./xq $xml|jq -r ".[0]|.title"`
+        body=`./xq $xml|jq -r ".[0]|.description"|tr -d '\n'`
+        echo $title, $body
+        title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
+        body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url`
+        curl -sL -X POST --data-urlencode "payload={\"channel\": \"#general\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${{ secrets.WEBHOOK_SLACK }}
