@@ -26,7 +26,12 @@ https://help.github.com/ja/actions/automating-your-workflow-with-github-actions/
 
 ### xq
 
-現在、`github.com/urfave/cli`が壊れてるため、`github.com/syui/xq`を最新版でbuildできない問題が発生中。したがって、go getではなくcurlしてます。
+`jq`, `xq`というコマンドラインツール依存です。
+
+```sh
+$ sudo pacman -S jq
+$ go get -v github.com/syui/xq
+```
 
 ### test
 

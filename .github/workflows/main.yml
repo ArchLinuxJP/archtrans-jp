@@ -13,7 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: |
-        curl -sL https://github.com/syui/xq/releases/download/0.1/linux_amd64_xq -o xq;chmod +x xq
+        export GOPATH=$HOME/go
+        export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+        go get -v github.com/syui/xq
         url=${{ secrets.WEBHOOK_URL }}
         url_arch="https://www.archlinux.org/feeds/news/"
         url_archjp="https://www.archlinux.jp/feeds/news.xml"
@@ -22,7 +24,7 @@ jobs:
         curl -sL $url_arch -o $xml
         curl -sLO $url_archjp
         date_now=`date +"%Y%m%d"`
-        date_xml=`date --date="$(./xq l $xml)" +"%Y%m%d"`;
+        date_xml=`date --date="$(xq l $xml)" +"%Y%m%d"`;
         echo check $date_xml $date_now
         # date_xml=$date_now #test
         if [ "$date_now" != "$date_xml" ];then
@@ -30,10 +32,10 @@ jobs:
             exit;
         fi
 
-        link=`./xq $xml|jq -r ".[0].link"`
+        link=`xq i $xml|jq -r ".[0].link"`
         link=${link%*/}
         # jp check
-        linkjp=`./xq $xmljp|jq -r ".[0].link"`
+        linkjp=`xq i $xmljp|jq -r ".[0].link"`
         linkjp=${linkjp%*/}
         if [ "${link##*/}" = "${linkjp##*/}" ];then
             echo updated jp;
@@ -41,8 +43,8 @@ jobs:
             exit;
         fi
         # translate
-        title=`./xq $xml|jq -r ".[0]|.title"`
-        body=`./xq $xml|jq -r ".[0]|.description"|tr -d '\n'`
+        title=`xq i $xml|jq -r ".[0]|.title"`
+        body=`xq i $xml|jq -r ".[0]|.description"|tr -d '\n'`
         echo $title, $body
         title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
         body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url`
