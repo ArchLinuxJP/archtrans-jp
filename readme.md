@@ -1,4 +1,4 @@
-archlinux.orgのニュース更新があれば自動翻訳して、slackに投稿する`github-actions`です。更新は、1日おきにチェックします。
+archlinux.orgのニュース更新があれば自動翻訳して、slackに投稿する`github-actions`です。更新は、15分おきにチェックします。
 
 なお、archlinux.jpがニュースを既に更新している場合、jpのnews-urlをslackに投稿します。
 
@@ -13,7 +13,7 @@ $ ./archtrans.sh "$GOOGLE_SCRIPT_URL" t
 
 ### cron
 
-> スケジュールされたワークフローを実行できる最短のインターバルは5分ごとです。
+> スケジュールされたワークフローを実行できる最短のインターバルは5分ごとです。以下は15分おきに実行する例。
 
 ```yml
 on:
