@@ -1,4 +1,4 @@
-archlinux.orgのニュース更新があれば自動翻訳して、slackに投稿する`github-actions`です。更新は、15分おきにチェックします。
+archlinux.orgのニュース更新があれば自動翻訳して、slackに投稿する`github-actions`です。更新は、1時間おきにチェックします。
 
 なお、archlinux.jpがニュースを既に更新している場合、jpのnews-urlをslackに投稿します。
 

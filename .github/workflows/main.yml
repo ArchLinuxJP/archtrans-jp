@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '*/59 * * * *'
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: |
-        cron_time=15
+        cron_time=59
         date_now=`date +%s -d "$cron_time minutes ago"`
         export GOPATH=$HOME/go
         export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
