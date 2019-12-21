@@ -24,7 +24,7 @@ on:
 
 https://help.github.com/ja/actions/automating-your-workflow-with-github-actions/events-that-trigger-workflows
 
-### xq
+### jq, xq
 
 `jq`, `xq`というコマンドラインツール依存です。
 
@@ -33,8 +33,3 @@ $ sudo pacman -S jq
 $ go get -v github.com/syui/xq
 ```
 
-### test
-
-github-actionsのtestは、slackのチャンネルをsyuiなどの個人変更し、コメントアウトすれば可能です。
-
-localでのtestは、urlを取得後、`archtrans.sh`など参照してください。

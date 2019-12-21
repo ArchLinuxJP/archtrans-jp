@@ -16,12 +16,12 @@ xmljp=news.xml
 curl -sL $url_arch -o $xml
 curl -sLO $url_archjp
 
-link=`xq i $xml|jq -r ".[0].link"`
+link=`xq a $xml|jq -r ".[0].link"`
 link=${link%*/}
-linkjp=`xq i $xmljp|jq -r ".[0].link"`
+linkjp=`xq a $xmljp|jq -r ".[0].link"`
 linkjp=${linkjp%*/}
 
-if [ "${link##*/}" = "${linkjp##*/}" ];then
+if [ "${link##*/}" != "${linkjp##*/}" ];then
 	echo slack post webhook
 	exit
 fi
@@ -35,9 +35,11 @@ if [ "$date_now" != "$date_xml" ];then
     exit
 fi
 
-title=`xq i $xml|jq -r ".[0]|.title"`
-body=`xq i $xml|jq -r ".[0]|.description"|tr -d '\n'`
+title=`xq a $xml|jq -r ".[0]|.title"`
+body=`xq a $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
 
 echo $title, $body
-curl -L -d "{\"txt\":\"$title\"}" $url
-curl -L -d "{\"txt\":\"$body\"}" $url
+title_ja=`curl -sL -d "{\"txt\":\"$title\"}" $url`
+body_ja=`curl -sL -d "{\"txt\":\"$body\"}" $url`
+
+curl -sL -X POST --data-urlencode "payload={\"channel\": \"@syui\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${WEBHOOK_SLACK}

@@ -3,7 +3,7 @@ name: archlinux.org news translate
 on:
   push:
     branches:
-      - master
+      - test
   schedule:
     - cron:  '*/59 * * * *'
 
@@ -32,10 +32,10 @@ jobs:
             exit
         fi
 
-        link=`xq i $xml|jq -r ".[0].link"`
+        link=`xq a $xml|jq -r ".[0].link"`
         link=${link%*/}
         # jp check
-        linkjp=`xq i $xmljp|jq -r ".[0].link"`
+        linkjp=`xq a $xmljp|jq -r ".[0].link"`
         linkjp=${linkjp%*/}
         if [ "${link##*/}" = "${linkjp##*/}" ];then
             echo updated jp;
@@ -43,8 +43,8 @@ jobs:
             exit
         fi
         # translate
-        title=`xq i $xml|jq -r ".[0]|.title"`
-        body=`xq i $xml|jq -r ".[0]|.description"|tr -d '\n'`
+        title=`xq a $xml|jq -r ".[0]|.title"`
+        body=`xq a $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
         echo $title, $body
         title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
         body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url`
