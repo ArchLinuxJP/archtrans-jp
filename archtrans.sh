@@ -40,6 +40,6 @@ body=`xq a $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
 
 echo $title, $body
 title_ja=`curl -sL -d "{\"txt\":\"$title\"}" $url`
-body_ja=`curl -sL -d "{\"txt\":\"$body\"}" $url`
+body_ja=`curl -sL -d "{\"txt\":\"$body\"}" $url|sed 's/&#39;//g'`
 
 curl -sL -X POST --data-urlencode "payload={\"channel\": \"@syui\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${WEBHOOK_SLACK}

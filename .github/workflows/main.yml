@@ -47,5 +47,5 @@ jobs:
         body=`xq a $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
         echo $title, $body
         title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
-        body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url`
+        body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url|sed 's/&#39;//g'`
         curl -sL -X POST --data-urlencode "payload={\"channel\": \"#general\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${{ secrets.WEBHOOK_SLACK }}
