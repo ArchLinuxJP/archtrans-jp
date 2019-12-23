@@ -3,7 +3,7 @@ name: archlinux.org news translate
 on:
   push:
     branches:
-      - test
+      - master
   schedule:
     - cron:  '*/59 * * * *'
 
@@ -14,7 +14,7 @@ jobs:
     - uses: actions/checkout@master
     - run: |
         cron_time=59
-        date_now=`date +%s -d "$cron_time minutes ago"`
+        date_now=`date +"%Y/%m/%d %H:%M:%S" -d "$cron_time minutes ago" -u`
         export GOPATH=$HOME/go
         export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
         go get -v github.com/syui/xq
@@ -25,7 +25,12 @@ jobs:
         xmljp=news.xml
         curl -sL $url_arch -o $xml
         curl -sLO $url_archjp
-        date_xml=`date --date="$(xq l $xml)" +%s`
+        date_xml=`xq a $xml|jq -r ".[0].published"`
+        date_xml=`date --date="$date_xml" +"%Y/%m/%d %H:%M:%S" -u`
+        echo "ci-time : $date_now"
+        echo "arch-time : $date_xml"
+        date_now=`date -d "$date_now" +"%s"`
+        date_xml=`date --date="$date_xml" +"%s"`
         echo "unix-time - arch:${date_xml}, ci:${date_now}"
         if [ "$date_xml" -lt "$date_now" ];then
             echo no news
