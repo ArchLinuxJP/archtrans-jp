@@ -24,12 +24,11 @@ on:
 
 https://help.github.com/ja/actions/automating-your-workflow-with-github-actions/events-that-trigger-workflows
 
-### jq, xq
+### xq
 
-`jq`, `xq`というコマンドラインツール依存です。
+`xq`というコマンドラインツール依存です。
 
 ```sh
-$ sudo pacman -S jq
 $ go get -v github.com/syui/xq
 ```
 
