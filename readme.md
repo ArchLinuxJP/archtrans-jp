@@ -33,3 +33,11 @@ $ sudo pacman -S jq
 $ go get -v github.com/syui/xq
 ```
 
+### test
+
+```sh
+$ git clone https://github.com/ArchLinuxJP/archtrans-jp
+$ cd archtrans-jp
+$ git checkout test
+$ git push -u origin test
+```
