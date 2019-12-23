@@ -3,9 +3,7 @@ name: archlinux.org news translate
 on:
   push:
     branches:
-      - master
-  schedule:
-    - cron:  '*/59 * * * *'
+      - test
 
 jobs:
   build:
@@ -31,7 +29,7 @@ jobs:
         date_now=`date -d "$date_now" +"%s"`
         date_xml=`date --date="$date_xml" +"%s"`
         echo "unix-time - arch:${date_xml}, ci:${date_now}"
-        if [ "$date_xml" -lt "$date_now" ];then
+        if [ "$date_xml" -gt "$date_now" ];then
             echo no news
             exit
         fi
@@ -41,7 +39,7 @@ jobs:
         # jp check
         linkjp=`xq $xmljp|jq -r ".[0].link"`
         linkjp=${linkjp%*/}
-        if [ "${link##*/}" = "${linkjp##*/}" ];then
+        if [ "${link##*/}" != "${linkjp##*/}" ];then
             echo updated jp;
             curl -sL -X POST --data-urlencode "payload={\"channel\": \"#general\" , \"username\": \"webhookbot\" , \"text\": \"${linkjp}\" , \"icon_emoji\": \":archjp:\"}" ${{ secrets.WEBHOOK_SLACK }}
             exit
@@ -52,4 +50,4 @@ jobs:
         echo $title, $body
         title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
         body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url|sed 's/&#39;//g'`
-        curl -sL -X POST --data-urlencode "payload={\"channel\": \"#general\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${{ secrets.WEBHOOK_SLACK }}
+        curl -sL -X POST --data-urlencode "payload={\"channel\": \"@syui\" , \"username\": \"webhookbot\" , \"text\": \"${link}\n${title}\n${body}\n${title_ja}\n${body_ja}\" , \"icon_emoji\": \":arch:\"}" ${{ secrets.WEBHOOK_SLACK }}
