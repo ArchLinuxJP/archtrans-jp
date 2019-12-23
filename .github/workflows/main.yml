@@ -25,8 +25,7 @@ jobs:
         xmljp=news.xml
         curl -sL $url_arch -o $xml
         curl -sLO $url_archjp
-        date_xml=`xq a $xml|jq -r ".[0].published"`
-        date_xml=`date --date="$date_xml" +"%Y/%m/%d %H:%M:%S" -u`
+        date_xml=`date --date="$(xq p $xml)" +"%Y/%m/%d %H:%M:%S" -u`
         echo "ci-time : $date_now"
         echo "arch-time : $date_xml"
         date_now=`date -d "$date_now" +"%s"`
