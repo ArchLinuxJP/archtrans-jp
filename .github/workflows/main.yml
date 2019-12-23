@@ -36,10 +36,10 @@ jobs:
             exit
         fi
 
-        link=`xq a $xml|jq -r ".[0].link"`
+        link=`xq $xml|jq -r ".[0].link"`
         link=${link%*/}
         # jp check
-        linkjp=`xq a $xmljp|jq -r ".[0].link"`
+        linkjp=`xq $xmljp|jq -r ".[0].link"`
         linkjp=${linkjp%*/}
         if [ "${link##*/}" = "${linkjp##*/}" ];then
             echo updated jp;
@@ -47,8 +47,8 @@ jobs:
             exit
         fi
         # translate
-        title=`xq a $xml|jq -r ".[0]|.title"`
-        body=`xq a $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
+        title=`xq $xml|jq -r ".[0]|.title"`
+        body=`xq $xml|jq -r ".[0]|.description"|tr -d '\n'|sed -e 's/<[^>]*>//g'`
         echo $title, $body
         title_ja=`curl -L -d "{\"txt\":\"$title\"}" $url`
         body_ja=`curl -L -d "{\"txt\":\"$body\"}" $url|sed 's/&#39;//g'`
